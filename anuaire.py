@@ -38,7 +38,7 @@ class anuaire:
 		self.uni = test = self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12"]/p/text()')
 		self.mail = test = self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/a/text()')
 		self.tel = self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/span/a/text()')
-		return dict(nom=str(self.nom) +" "+ str(self.prenom), adresse=str(self.mail),cp="", ville=str(self.uni), tel=str(self.tel))
+		return dict(nom=str(str(self.nom[0]) +" "+ str(self.prenom[0])), adresse=str(self.mail[0]),cp="", ville="", tel=str(self.tel[0]))
 	
 	def getlist(self,term):
 		requests.get("https://annuaire.uha.fr/index.php?type=pers",cookies=cookies)
@@ -59,19 +59,7 @@ class anuaire:
 		self.noms = self.tree.xpath('//span[@class="majuscules"]/text()')
 		self.prenoms = self.tree.xpath('//span[@class="gras"]/text()')
 		self.listeleve.append(str(self.nom) +" "+ str(self.prenom))
-	def searchglobal(self,nom):
-		res = []
-		self.listeleve = []
-		self.listprof = []
-		self.getlist(nom)
-		for user in self.listprof:
-			print(user)
-			res.append(self.search(user,"prof"))
-		for user in self.listeleve:
-			print(user)
-			res.append(self.search(user,"eleve"))
-		return res
-	def searchglobal2(self,term):
+	def searchglobal(self,term):
 		user = term
 		res = []
 		print(user)
