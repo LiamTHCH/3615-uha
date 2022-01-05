@@ -1,4 +1,5 @@
 
+from os import PRIO_PGRP
 import requests
 from lxml import html
 url = "https://annuaire.uha.fr/index.php"
@@ -32,13 +33,17 @@ class anuaire:
 			}, cookies=cookies)
 		#print (response.content)
 		self.tree = html.fromstring(response.content)
-		self.nom = self.tree.xpath('//span[@class="majuscules"]/text()')
-		self.prenom = self.tree.xpath('//span[@class="gras"]/text()')
+		self.nom = list(self.tree.xpath('//span[@class="majuscules"]/text()'))
+		self.prenom = list(self.tree.xpath('//span[@class="gras"]/text()'))
 		del self.prenom[-1]
-		self.uni = test = self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12"]/p/text()')
-		self.mail = test = self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/a/text()')
-		self.tel = self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/span/a/text()')
-		return dict(nom=str(str(self.nom[0]) +" "+ str(self.prenom[0])), adresse=str(self.mail[0]),cp="", ville="", tel=str(self.tel[0]))
+		self.uni = self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12"]/p/text()')
+		self.mail = list(self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/a/text()'))
+		self.tel = list(self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/span/a/text()'))
+		if not bool(self.prenom): return ""
+		if not bool(self.tel): self.tel = ""
+		else: self.tel = self.tel[0]
+		return dict(nom=str(str(self.nom[0]) +" "+ str(self.prenom[0])), adresse=str(self.mail[0]),cp="", ville="", tel=str(self.tel))
+			
 	
 	def getlist(self,term):
 		requests.get("https://annuaire.uha.fr/index.php?type=pers",cookies=cookies)
@@ -62,29 +67,28 @@ class anuaire:
 	def searchglobal(self,term):
 		user = term
 		res = []
-		print(user)
-		requests.get("https://annuaire.uha.fr/index.php?type=pers",cookies=cookies)
-		response = requests.post(url, allow_redirects=False, data={
-				'search': user,
-				'action': 'Chercher'
-			})
-		self.tree = html.fromstring(response.content)
-		self.noms = self.tree.xpath('//span[@class="majuscules"]/text()')
-		self.prenoms = self.tree.xpath('//span[@class="gras"]/text()')
-		del self.prenoms[-1]
-		for i in range(0,len(self.noms)):
-			print("search for",str(self.prenoms[i]+" "+self.noms[i]))
-			res.append(self.search(self.prenoms[i]+" "+self.noms[i],"prof"))
 		self.search(user,"eleve")
-		self.prenoms = self.prenom
-		self.noms = self.nom
+		self.prenoms = list(self.prenom)
+		self.noms = list(self.nom)
 		if len(self.prenoms) != 1:
 			for i in range(0,len(self.noms)):
 				print("search for",str(self.prenoms[i]+" "+self.noms[i]))
 				res.append(self.search(self.prenoms[i]+" "+self.noms[i],"eleve"))
 		else:
 			res.append(self.search(user,"eleve"))
+		requests.get("https://annuaire.uha.fr/index.php?type=pers",cookies=cookies)
+		response = requests.post(url, allow_redirects=False, data={
+				'search': user,
+				'action': 'Chercher'
+			})
+		self.tree = html.fromstring(response.content)
+		self.noms = list(self.tree.xpath('//span[@class="majuscules"]/text()'))
+		self.prenoms = list(self.tree.xpath('//span[@class="gras"]/text()'))
+		for i in range(0,len(self.noms)):
+			print("search for",str(self.prenoms[i]+" "+self.noms[i]))
+			res.append(self.search(self.prenoms[i]+" "+self.noms[i],"prof"))
 		return res
+
 
 
 

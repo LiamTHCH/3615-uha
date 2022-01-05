@@ -216,6 +216,7 @@ def affiche_resultat(quoi, ou, res, annu=''):
             for a in range((page-1)*5, page*5):
                 if a < len(res):
                     r = res[a]
+                    print(r['adresse'])
                     if 'adresse' not in r or r['adresse'] == '':
                         r['adresse'] = '(adresse masquée)'
                     if 'tel' not in r or r['tel'] == '':
