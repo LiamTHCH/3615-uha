@@ -40,9 +40,11 @@ class anuaire:
 		self.mail = list(self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/a/text()'))
 		self.tel = list(self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/span/a/text()'))
 		if not bool(self.prenom): return ""
+		if not bool(self.mail): self.mail = ""
+		else: self.mail = self.mail[0]
 		if not bool(self.tel): self.tel = ""
 		else: self.tel = str(self.tel[0]).replace(" ","")
-		return dict(nom=str(str(self.nom[0]) +" "+ str(self.prenom[0])), adresse=str(self.mail[0]),cp="", ville=type, tel=str(self.tel))
+		return dict(nom=str(str(self.nom[0]) +" "+ str(self.prenom[0])), adresse=self.mail,cp="", ville=type, tel=str(self.tel))
 			
 	
 	def getlist(self,term):
