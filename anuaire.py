@@ -25,7 +25,7 @@ class anuaire:
 	def search(self,name,type):
 		user = name
 		if type == "prof" : requests.get("https://annuaire.uha.fr/index.php?type=pers",cookies=cookies)
-		elif type == "eleve" : requests.get("https://annuaire.uha.fr/index.php?type=etud",cookies=cookies)
+		elif type == "étudiant" : requests.get("https://annuaire.uha.fr/index.php?type=etud",cookies=cookies)
 		else: exit(-1)
 		response = requests.post(url, allow_redirects=False, data={
 				'search': user,
@@ -41,8 +41,8 @@ class anuaire:
 		self.tel = list(self.tree.xpath('//div[@class="xl-col-6 l-col-6 m-col-6 ml-col-6 s-col-12 sl-col-12 droite"]/p/span/a/text()'))
 		if not bool(self.prenom): return ""
 		if not bool(self.tel): self.tel = ""
-		else: self.tel = self.tel[0]
-		return dict(nom=str(str(self.nom[0]) +" "+ str(self.prenom[0])), adresse=str(self.mail[0]),cp="", ville="", tel=str(self.tel))
+		else: self.tel = str(self.tel[0]).replace(" ","")
+		return dict(nom=str(str(self.nom[0]) +" "+ str(self.prenom[0])), adresse=str(self.mail[0]),cp="", ville=type, tel=str(self.tel))
 			
 	
 	def getlist(self,term):
@@ -67,15 +67,15 @@ class anuaire:
 	def searchglobal(self,term):
 		user = term
 		res = []
-		self.search(user,"eleve")
+		self.search(user,"étudiant")
 		self.prenoms = list(self.prenom)
 		self.noms = list(self.nom)
 		if len(self.prenoms) != 1:
 			for i in range(0,len(self.noms)):
-				print("search for",str(self.prenoms[i]+" "+self.noms[i]))
-				res.append(self.search(self.prenoms[i]+" "+self.noms[i],"eleve"))
+				print("search for",str(self.prenoms[i]+" "+self.noms[i]+" Eleve"))
+				res.append(self.search(self.prenoms[i]+" "+self.noms[i],"étudiant"))
 		else:
-			res.append(self.search(user,"eleve"))
+			res.append(self.search(user,"étudiant"))
 		requests.get("https://annuaire.uha.fr/index.php?type=pers",cookies=cookies)
 		response = requests.post(url, allow_redirects=False, data={
 				'search': user,
@@ -85,7 +85,7 @@ class anuaire:
 		self.noms = list(self.tree.xpath('//span[@class="majuscules"]/text()'))
 		self.prenoms = list(self.tree.xpath('//span[@class="gras"]/text()'))
 		for i in range(0,len(self.noms)):
-			print("search for",str(self.prenoms[i]+" "+self.noms[i]))
+			print("search for",str(self.prenoms[i]+" "+self.noms[i] + " Prof"))
 			res.append(self.search(self.prenoms[i]+" "+self.noms[i],"prof"))
 		return res
 
