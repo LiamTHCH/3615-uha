@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import requests
 import sys
 import json
-import anuaire
+from anuaire import anuaire
 url = "https://annuaire.uha.fr/index.php"
 anuaire = anuaire(url)
 m = None
