@@ -3,7 +3,7 @@ import requests
 from lxml import html
 url = "https://annuaire.uha.fr/index.php"
 co = str(input("Valeur token :"))
-cookies = {'Annuaire': co}
+cookies = {'Annuaire': 'ST-290900-cYrLP5PDOfi0Jc2IoCyl--Y8PuY-cas6uhafr'}
 class anuaire:
 	def __init__(self, url):
 		self.name = str()
@@ -16,6 +16,11 @@ class anuaire:
 		self.tree = 0
 		self.listeleve = []
 		self.listprof = []
+		self.tels = []
+		self.noms = []
+		self.prenoms = []
+		self.unis = []
+		self.mails = []
 	def search(self,name,type):
 		user = name
 		if type == "prof" : requests.get("https://annuaire.uha.fr/index.php?type=pers",cookies=cookies)
@@ -42,26 +47,57 @@ class anuaire:
 				'action': 'Chercher'
 			}, cookies=cookies)
 		self.tree = html.fromstring(response.content)
-		self.nom = self.tree.xpath('//span[@class="majuscules"]/text()')
-		self.prenom = self.tree.xpath('//span[@class="gras"]/text()')
-		self.listprof.append(self.nom + self.prenom)
+		self.noms = self.tree.xpath('//span[@class="majuscules"]/text()')
+		self.prenoms = self.tree.xpath('//span[@class="gras"]/text()')
+		self.listprof.append(str(self.nom) +" "+ str(self.prenom))
 		requests.get("https://annuaire.uha.fr/index.php?type=etud",cookies=cookies)
 		response = requests.post(url, allow_redirects=False, data={
 				'search': term,
 				'action': 'Chercher'
 			}, cookies=cookies)
 		self.tree = html.fromstring(response.content)
-		self.nom = self.tree.xpath('//span[@class="majuscules"]/text()')
-		self.prenom = self.tree.xpath('//span[@class="gras"]/text()')
-		self.listeleve.append(self.nom + self.prenom)
+		self.noms = self.tree.xpath('//span[@class="majuscules"]/text()')
+		self.prenoms = self.tree.xpath('//span[@class="gras"]/text()')
+		self.listeleve.append(str(self.nom) +" "+ str(self.prenom))
 	def searchglobal(self,nom):
 		res = []
+		self.listeleve = []
+		self.listprof = []
 		self.getlist(nom)
 		for user in self.listprof:
+			print(user)
 			res.append(self.search(user,"prof"))
 		for user in self.listeleve:
+			print(user)
 			res.append(self.search(user,"eleve"))
 		return res
+	def searchglobal2(self,term):
+		user = term
+		res = []
+		print(user)
+		requests.get("https://annuaire.uha.fr/index.php?type=pers",cookies=cookies)
+		response = requests.post(url, allow_redirects=False, data={
+				'search': user,
+				'action': 'Chercher'
+			})
+		self.tree = html.fromstring(response.content)
+		self.noms = self.tree.xpath('//span[@class="majuscules"]/text()')
+		self.prenoms = self.tree.xpath('//span[@class="gras"]/text()')
+		del self.prenoms[-1]
+		for i in range(0,len(self.noms)):
+			print("search for",str(self.prenoms[i]+" "+self.noms[i]))
+			res.append(self.search(self.prenoms[i]+" "+self.noms[i],"prof"))
+		self.search(user,"eleve")
+		self.prenoms = self.prenom
+		self.noms = self.nom
+		if len(self.prenoms) != 1:
+			for i in range(0,len(self.noms)):
+				print("search for",str(self.prenoms[i]+" "+self.noms[i]))
+				res.append(self.search(self.prenoms[i]+" "+self.noms[i],"eleve"))
+		else:
+			res.append(self.search(user,"eleve"))
+		return res
+
 
 
 
