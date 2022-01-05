@@ -6,7 +6,9 @@ from bs4 import BeautifulSoup
 import requests
 import sys
 import json
-
+import anuaire
+url = "https://annuaire.uha.fr/index.php"
+anuaire = anuaire(url)
 m = None
 
 
@@ -60,15 +62,8 @@ def annuaire_saisie(quoi, ou):
 def annuaire_recherche(quoi, ou):
     "Effectue une recherche sur plusieurs annuaires"
     res = []
-    if len(res) == 0:
-        annu = "118712.fr"
-        res = annuaire118712(quoi, ou)
-    if len(res) == 0:
-        annu = "118218.fr"
-        res = annuaire118218(quoi, ou)
-    if len(res) == 0:
-        annu = "118000.fr"
-        res = annu118000(quoi, ou)
+    annu = "UHA.fr"
+    res = anuaire.searchglobal(quoi)
     return(res, annu)
 
 
