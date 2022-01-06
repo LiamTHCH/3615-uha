@@ -1,11 +1,11 @@
-# pyNitel
-python library to write Minitel servers/software
+# 3615 UHA
+python app to create a digital phonebook for the minitel at the UHA
 
-Inspired by Cristel and Dragster, my previous Minitel server software on Apple II and 68K Macintosh...
+Inspired by Pynitel
 
 See:
-- https://github.com/cquest/cristel
-- https://github.com/cquest/dragster
+- https://github.com/cquest/pynitel
+
 
 ***This code is extremely experimental !***
 
@@ -22,26 +22,16 @@ A 220K resistor is needed between the 5V and RX pin on the cable end (green and 
 
 ### Annuaire
 
-This example simulates the defunct "Annuaire Electronique", the videotex version of the phone directory.
+This app simulates the defunct "Annuaire Electronique", the videotex version of the phone directory.
 
-**The goal**: use a Minitel to enter the name / location then query an existing phone directory on the web (118712.fr or others) and display the results on the Minitel as closest as possible to the original service back in the 80/90s.
+**The goal**: use a Minitel to enter the name / location then query an existing phone directory on the web and display the results on the Minitel as closest as possible to the original service back in the 80/90s.
 
 **Status**:
-- name/location input: implemented
-- query existing phone directory: implemented on 118712.fr, 118218.fr ans 118000.fr
+- name input: implemented
+- query existing phone directory: implemented on uha.fr for students and teachers
 - basic display: implemented
 - display interaction (paging): implemented
 
-**To test**: `python3 example_annuaire.py`
+**To test**: `python3 3615uha.py`
 
 
-### 3615 ULLA
-
-This example simulates the famous "3615 ULLA" a chat and messaging pink Minitel service.
-
-**The goal**: recreate the videotex interface of 3615 ULLA, but acting as a Mastodon client. The script mainly deals with the videotex recreation, and delegates all the messaging part to Mastodon though its API.
-
-**Status**: partly implemented
-
-**To test**: `python3 ulla.py [mastodon_account password]`
-**Example**: `python3 ulla.py cquest@amicale.net mypassword`
