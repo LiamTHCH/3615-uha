@@ -4,7 +4,7 @@ import requests
 from lxml import html
 url = "https://annuaire.uha.fr/index.php"
 co = str(input("Valeur token :"))
-cookies = {'Annuaire': 'ST-298897--ceiQTTdFDHtSk9ggaP7Aunfg6A-cas6uhafr'}
+cookies = {'Annuaire': 'Token for uha'}
 class anuaire:
 	def __init__(self, url):
 		self.name = str()
